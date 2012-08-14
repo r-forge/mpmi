@@ -1,0 +1,3 @@
+useDynLib(mpmi)
+exportPattern("^[[:alpha:]]+")
+import(KernSmooth)

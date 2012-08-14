@@ -1,0 +1,4 @@
+%\VignetteIndexEntry{Vignette}
+\documentclass{article}
+\begin{document}
+\end{document}
