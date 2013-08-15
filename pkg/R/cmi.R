@@ -15,12 +15,12 @@ function(cts, level = 3L, na.rm = FALSE, h, ...)
         {
             h2 <- function(x)
             {
-                return(dpik(x[is.finite(x)], level = level, kernel = "epanech", ...))
+                return(dpikSafe(x[is.finite(x)], level = level, kernel = "epanech", ...))
             }
             h <- apply(cts, 2, h2)
         } else 
         {
-            h <- apply(cts, 2, dpik, level = level, kernel = "epanech", ...)
+            h <- apply(cts, 2, dpikSafe, level = level, kernel = "epanech", ...)
         }
     }
  
@@ -47,7 +47,7 @@ cmi.pw <- function(v1, v2, h, ...)
     
     if (missing(h))
     {
-        h <- c(dpik(v1[ok1], level = 3L, kernel = "epanech", ...), dpik(v2[ok2], level = 3L, kernel = "epanech", ...))
+        h <- c(dpikSafe(v1[ok1], level = 3L, kernel = "epanech", ...), dpikSafe(v2[ok2], level = 3L, kernel = "epanech", ...))
     }
 
     # Remove samples with missing values

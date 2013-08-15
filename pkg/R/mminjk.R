@@ -22,12 +22,12 @@ function(cts, disc, level = 3L, na.rm = FALSE, h, ...)
         {
             h2 <- function(x)
             {
-                return(dpik(x[is.finite(x)], level = level, kernel = "epanech", ...))
+                return(dpikSafe(x[is.finite(x)], level = level, kernel = "epanech", ...))
             }
             h <- apply(cts, 2, h2)
         } else 
         {
-            h <- apply(cts, 2, dpik, level = level, kernel = "epanech", ...)
+            h <- apply(cts, 2, dpikSafe, level = level, kernel = "epanech", ...)
         }
     }
  
@@ -48,7 +48,7 @@ function(cts, disc, level = 3L, na.rm = FALSE, h, ...)
     return(result$mi)
 }
 
-mminjk.pw <- function(cts, disc, h = dpik(cts[!is.na(cts)], level = 3L, kernel = "epanech"))
+mminjk.pw <- function(cts, disc, h = dpikSafe(cts[!is.na(cts)], level = 3L, kernel = "epanech"))
 {
     if (length(cts) != length(disc)) stop("Input vectors must be the same length")
 
