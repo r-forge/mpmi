@@ -3,6 +3,8 @@
 \author{Chris Pardy}
 
 \begin{document}
+%\VignetteIndexEntry{Introduction to mpmi}
+%\VignetteDepends{mpmi}
 \maketitle
 
 \section{Using the \texttt{mpmi} package}
