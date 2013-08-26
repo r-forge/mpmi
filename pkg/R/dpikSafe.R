@@ -9,7 +9,7 @@ dpikSafe <- function(x, ...)
 		msg <- geterrmessage()
 		if (grepl("scale estimate is zero for input data", msg))
 		{
-			warning("Using standard deviation as scale estimate, probably beacuse IQR == 0")
+			warning("Using standard deviation as scale estimate, probably because IQR == 0")
 			result <- dpik(x, scalest = "stdev", ...)	
 		} else 
 		{

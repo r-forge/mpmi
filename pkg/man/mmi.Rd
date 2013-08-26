@@ -18,17 +18,19 @@
 \usage{
 mmi(cts, disc, level = 3L, na.rm = FALSE, h, ...)
 mminjk(cts, disc, level = 3L, na.rm = FALSE, h, ...)
-mmi.pw(cvec, dvec, h, ...)
-mminjk.pw(cvec, dvec, h, ...)
+mmi.pw(cts, disc, h, ...) 
+mminjk.pw(cts, disc, h, ...)
 }
 %- maybe also 'usage' for other objects documented here.
 \arguments{
   \item{cts}{ The data matrix. Each row is an observation and each column is a
-      variable of interest. Should be numerical data.
+      variable of interest. Should be numerical data. (For the pairwise functions this
+	should be a vector.)
 %%     ~~Describe \code{cts} here~~
 }
     \item{disc}{ Matrix of discrete data, each row is an observation and each
-        column is a variable. Will be coerced to integers. }
+        column is a variable. Will be coerced to integers. (For the pairwise functions this
+	should be a vector.)}
 %%
   \item{level}{ The number of levels used for plug-in bandwidth estimation (see
       the documentation for the KernSmooth package.)
@@ -46,8 +48,6 @@ mminjk.pw(cvec, dvec, h, ...)
   \item{\dots}{ Additional options passed to dpik() if necessary.
 %%     ~~Describe \code{\dots} here~~
 } 
-    \item{cvec}{A vector of continuous numeric data.}
-    \item{dvec}{A vector of categorical data. Can be characters or factors.}
 }
 \details{ mminjk() and mminjk.pw() return just the MI values without performing the
     jackknife. mmi.pw() and mminjk.pw() only require one bandwidth for the

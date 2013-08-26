@@ -48,7 +48,7 @@ function(cts, disc, level = 3L, na.rm = FALSE, h, ...)
     return(result$mi)
 }
 
-mminjk.pw <- function(cts, disc, h = dpikSafe(cts[!is.na(cts)], level = 3L, kernel = "epanech"))
+mminjk.pw <- function(cts, disc, h, ...)
 {
     if (length(cts) != length(disc)) stop("Input vectors must be the same length")
 
@@ -56,6 +56,11 @@ mminjk.pw <- function(cts, disc, h = dpikSafe(cts[!is.na(cts)], level = 3L, kern
     ok <- !is.na(disc) & !is.na(cts)
     disc <- disc[ok]
     cts <- cts[ok]
+
+    if (missing(h))
+    {
+        h <- dpikSafe(cts, level = 3L, kernel = "epanech", ...)
+    }
 
     lf <- length(cts)
 

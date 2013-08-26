@@ -45,15 +45,15 @@ cmi.pw <- function(v1, v2, h, ...)
     ok1 <- !is.na(v1)
     ok2 <- !is.na(v2)
     
-    if (missing(h))
-    {
-        h <- c(dpikSafe(v1[ok1], level = 3L, kernel = "epanech", ...), dpikSafe(v2[ok2], level = 3L, kernel = "epanech", ...))
-    }
-
     # Remove samples with missing values
     ok <- ok1 & ok2
     v1 <- v1[ok]
     v2 <- v2[ok]
+
+    if (missing(h))
+    {
+        h <- c(dpikSafe(v1, level = 3L, kernel = "epanech", ...), dpikSafe(v2, level = 3L, kernel = "epanech", ...))
+    }
 
     result <- .Fortran("cmipw",
             as.double(v1),
