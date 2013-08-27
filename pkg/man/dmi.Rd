@@ -4,10 +4,10 @@
 \alias{dmi.pw}
 \alias{dminjk.pw}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Calculate MI for categorical (discrete) data
+\title{ Calculate BCMI for categorical (discrete) data
 %%  ~~function to do ... ~~
 }
-\description{ This function calculates MI between a set of discrete variables
+\description{ This function calculates BCMI between a set of discrete variables
     held as columns in a matrix. It also performs jackknife bias correction and
     provides a z-score for the hypothesis of no association. Also included are
     the *.pw functions that calculate MI between two vectors only.
@@ -39,7 +39,8 @@ dminjk.pw(disc1, disc2)
     \item{bcmi}{ Jackknife bias corrected MI estimates. These are each MI value
     minus the corresponding jackknife estimate of bias.}
     \item{zvalues}{ Z-scores for each hypothesis that the corresponding 
-    bcmi value is zero.}
+    bcmi value is zero. These have poor statistical properties but can be useful
+    as a rough measure of the strength of association.}
 }
 %% \references{
 %% %% ~put references to the literature/web site here ~

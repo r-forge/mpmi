@@ -4,10 +4,10 @@
 \alias{cmi.pw}
 \alias{cminjk.pw}
 %- Also NEED an '\alias' for EACH other topic documented here.
-\title{ Calculate MI between a set of continuous variables
+\title{ Calculate BCMI between a set of continuous variables
 %%  ~~function to do ... ~~
 }
-\description{ This function calculates MI between a set of continuous variables
+\description{This function calculates MI and BCMI between a set of continuous variables
     held as columns in a matrix. It also performs jackknife bias correction and
     provides a z-score for the hypothesis of no association. Also included are
     the *.pw functions that calculate MI between two vectors only.
@@ -54,10 +54,11 @@ cminjk.pw(v1, v2, h, ...)
 \value{ Returns a list of 3 matrices each of size ncol(cts) by
     ncol(cts)
     \item{mi}{ The raw MI estimates.}
-    \item{bcmi}{ Jackknife bias corrected MI estimates. These are each MI value
+    \item{bcmi}{Jackknife bias corrected MI estimates. These are each MI value
     minus the corresponding jackknife estimate of bias.}
-    \item{zvalues}{ Z-scores for each hypothesis that the corresponding 
-    bcmi value is zero.}
+    \item{zvalues}{Z-scores for each hypothesis that the corresponding 
+    BCMI value is zero. These have poor statistical properties but can be useful
+    as a rough measure of the strength of association.}
 %%  ~Describe the value returned
 %%  If it is a LIST, use
 %%  \item{comp1 }{Description of 'comp1'}
