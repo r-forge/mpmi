@@ -125,8 +125,6 @@ mmi.pw(InsectSprays[,1], InsectSprays[,2])
 boxplot(morley[,3] ~ morley[,1])
 m2 <- mmi.pw(morley[,3], morley[,1])
 m2
-# P-value:
-1 - pnorm(m2$z)
 
 ##################################################
 # See the vignette for large-scale examples.
