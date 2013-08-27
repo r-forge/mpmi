@@ -54,7 +54,7 @@ cminjk.pw(v1, v2, h, ...)
 \value{ Returns a list of 3 matrices each of size ncol(cts) by
     ncol(cts)
     \item{mi}{ The raw MI estimates.}
-    \item{bcmi}{Jackknife bias corrected MI estimates. These are each MI value
+    \item{bcmi}{Jackknife bias corrected MI estimates (BCMI). These are each MI value
     minus the corresponding jackknife estimate of bias.}
     \item{zvalues}{Z-scores for each hypothesis that the corresponding 
     BCMI value is zero. These have poor statistical properties but can be useful

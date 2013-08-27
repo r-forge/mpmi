@@ -8,7 +8,7 @@
     of discrete variables.
 %%  ~~function to do ... ~~
 }
-\description{ This function calculates BCMI between a set of continuous variables
+\description{ This function calculates MI and BCMI between a set of continuous variables
     and a set of discrete variables (variables in columns). It also performs jackknife bias correction and
     provides a z-score for the hypothesis of no association. Also included are
     the *.pw functions that calculate MI between two vectors only and the `njk'
@@ -58,7 +58,7 @@ mminjk.pw(cts, disc, h, ...)
     ncol(disc). Each row index represents a continuous variable and each column
     index a discrete variable. 
     \item{mi}{The raw MI estimates.}
-    \item{bcmi}{Jackknife bias corrected MI estimates. These are each MI value
+    \item{bcmi}{Jackknife bias corrected MI estimates (BCMI). These are each MI value
     minus the corresponding jackknife estimate of bias.}
     \item{zvalues}{z-scores for each hypothesis that the corresponding 
     bcmi value is zero. These have poor statistical properties but can be useful
