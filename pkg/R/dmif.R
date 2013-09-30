@@ -65,7 +65,7 @@ dminjk.pw <- function(disc1, disc2)
                     result = ans, DUP = FALSE)$result)
 }
 
-dminjk <- function(dmat)
+dminjk <- function(dmat, ncores = -1)
 {
     # Convert to integers
     dint <- matrix(0L, nrow = nrow(dmat), ncol = ncol(dmat))
@@ -79,6 +79,8 @@ dminjk <- function(dmat)
                     dint,
                     as.integer(nrow(dint)),
                     as.integer(ncol(dint)),
-                    result = ans, NAOK = TRUE, DUP = FALSE)$result)
+                    result = ans, 
+                    as.integer(ncores),
+                    NAOK = TRUE, DUP = FALSE)$result)
 }
 

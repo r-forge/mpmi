@@ -174,7 +174,7 @@ subroutine mmipwnjk(cts, lc, disc, h, ans) !, mps, zvalue)
     deallocate(ptab)
 end subroutine
 
-subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h)
+subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h, ncores)
     use iface
     implicit none
 
@@ -197,7 +197,7 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h)
     integer, dimension(nrs) :: svec
 
     ! Local variables
-    integer :: i, j, k, nok
+    integer :: i, j, k, nok, maxcores, ncores
     logical, dimension(nrc) :: ok
 
     ! Function to get R's code for missing integers
@@ -207,9 +207,18 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h)
 
     ! R function to check real missing values
     integer :: rfinite
+    ! OpenMP functions for getting number of cores
+    integer :: omp_get_num_procs
 
     naint = rnaint() ! Asks R for its missing integer coding
-
+    
+    ! Select number of cores to use
+    maxcores = omp_get_num_procs()
+    if (ncores <= 0 .or. ncores > maxcores) then
+        ncores = maxcores
+    end if
+    call omp_set_num_threads(ncores)
+    
     !$omp parallel do default(none) shared(ncc, ncs, cdat, sdat, &
     !$omp nrc, naint, h, mis)  &
     !$omp private(ok, nok, cvec, svec, i, j) &

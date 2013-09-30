@@ -235,7 +235,7 @@ subroutine dminjk(v1, l1, v2, l2, ans)
     deallocate(tab, ptab, rv, cv)
 end subroutine
 
-subroutine dmimnjk(sdat, nrs, ncs, ansm)
+subroutine dmimnjk(sdat, nrs, ncs, ansm, ncores)
     use iface
     implicit none
 
@@ -247,7 +247,7 @@ subroutine dmimnjk(sdat, nrs, ncs, ansm)
     real(kind=rdble), dimension(ncs, ncs), intent(out) :: ansm
 
     ! Local variables
-    integer :: i, j, nok
+    integer :: i, j, nok, maxcores, ncores
     logical, dimension(nrs) :: ok
     ! Arrays to hold non-missing observations only
     integer, dimension(nrs) :: cvec, svec
@@ -256,10 +256,19 @@ subroutine dmimnjk(sdat, nrs, ncs, ansm)
     integer :: rnaint
     ! Local variable to hold R NA value
     integer :: naint
+    ! OpenMP functions for getting number of cores
+    integer :: omp_get_num_procs
 
     ! Assign R NA value
     naint = rnaint()
 
+    ! Select number of cores to use
+    maxcores = omp_get_num_procs()
+    if (ncores <= 0 .or. ncores > maxcores) then
+        ncores = maxcores
+    end if
+    call omp_set_num_threads(ncores)
+    
     !$omp parallel do default(none) shared(ncs, sdat, naint, ansm) &
     !$omp private(i, j, ok, nok, cvec, svec) &
     !$omp schedule(dynamic)

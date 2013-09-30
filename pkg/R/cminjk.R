@@ -1,5 +1,5 @@
 cminjk <-
-function(cts, level = 3L, na.rm = FALSE, h, ...)
+function(cts, level = 3L, na.rm = FALSE, h, ncores = -1, ...)
 {
     cts <- as.matrix(cts)
     mode(cts) <- "double"
@@ -32,6 +32,7 @@ function(cts, level = 3L, na.rm = FALSE, h, ...)
                     # bcmi = bcmi, 
                     # zvalues = zans,
                     as.double(h), 
+                    as.integer(ncores),
                     NAOK = TRUE, 
                     DUP = TRUE)
 
