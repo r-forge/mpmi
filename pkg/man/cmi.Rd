@@ -14,8 +14,8 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-cmi(cts, level = 3L, na.rm = FALSE, h, ...)
-cminjk(cts, level = 3L, na.rm = FALSE, h, ...)
+cmi(cts, level = 3L, na.rm = FALSE, h, ncores = -1, ...)
+cminjk(cts, level = 3L, na.rm = FALSE, h, ncores = -1, ...)
 cmi.pw(v1, v2, h, ...)
 cminjk.pw(v1, v2, h, ...)
 }
@@ -40,6 +40,8 @@ cminjk.pw(v1, v2, h, ...)
 }
   \item{\dots}{ Additional options passed to dpik() if necessary.
 %%     ~~Describe \code{\dots} here~~
+} 
+  \item{ncores}{Number of processor cores to use, ncores <= 0 will use all available cores.
 } 
     \item{v1}{ A vector for the pairwise version}
     \item{v2}{ A vector for the pairwise version}

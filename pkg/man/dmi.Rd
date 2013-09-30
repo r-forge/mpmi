@@ -14,8 +14,8 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-dmi(dmat)
-dminjk(dmat)
+dmi(dmat, ncores = -1)
+dminjk(dmat, ncores = -1)
 dmi.pw(disc1, disc2)
 dminjk.pw(disc1, disc2)
 }
@@ -27,6 +27,8 @@ dminjk.pw(disc1, disc2)
 }
     \item{disc1}{ A vector for the pairwise version}
     \item{disc2}{ A vector for the pairwise version}
+  \item{ncores}{Number of processor cores to use, ncores <= 0 will use all available cores.
+} 
 }
 \details{ The results of dmi() are in many ways similar to a correlation matrix,
     with each row and column index corresponding to a given variable.

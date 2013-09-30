@@ -16,8 +16,8 @@
 %%  ~~ A concise (1-5 lines) description of what the function does. ~~
 }
 \usage{
-mmi(cts, disc, level = 3L, na.rm = FALSE, h, ...)
-mminjk(cts, disc, level = 3L, na.rm = FALSE, h, ...)
+mmi(cts, disc, level = 3L, na.rm = FALSE, h, ncores = -1, ...)
+mminjk(cts, disc, level = 3L, na.rm = FALSE, h, ncores = -1, ...)
 mmi.pw(cts, disc, h, ...) 
 mminjk.pw(cts, disc, h, ...)
 }
@@ -45,6 +45,8 @@ mminjk.pw(cts, disc, h, ...)
       KernSmooth package.
 %%     ~~Describe \code{h} here~~
 }
+  \item{ncores}{Number of processor cores to use, ncores <= 0 will use all available cores.
+} 
   \item{\dots}{ Additional options passed to dpik() if necessary.
 %%     ~~Describe \code{\dots} here~~
 } 
