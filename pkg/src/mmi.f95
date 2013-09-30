@@ -174,12 +174,12 @@ subroutine mmipw(cts, lc, disc, h, ans, mps, zvalue)
     deallocate(ptab)
 end subroutine
 
-subroutine mmim(cdat, nrc, ncc, sdat, nrs, ncs, mis, bcmis, zmat, h)
+subroutine mmim(cdat, nrc, ncc, sdat, nrs, ncs, mis, bcmis, zmat, h, ncores)
     use iface
     implicit none
 
     ! Input variables
-    integer, intent(in) :: nrc, ncc, nrs, ncs !, switch
+    integer, intent(in) :: nrc, ncc, nrs, ncs
     ! integer, intent(in), optional :: m
     real(kind=rdble), dimension(nrc, ncc), intent(in) :: cdat
     real(kind=rdble), dimension(ncc), intent(in), optional :: h
@@ -197,7 +197,7 @@ subroutine mmim(cdat, nrc, ncc, sdat, nrs, ncs, mis, bcmis, zmat, h)
     integer, dimension(nrs) :: svec
 
     ! Local variables
-    integer :: i, j, k, nok
+    integer :: i, j, k, nok, maxcores, ncores
     logical, dimension(nrc) :: ok
 
     ! Function to get R's code for missing integers
@@ -207,8 +207,17 @@ subroutine mmim(cdat, nrc, ncc, sdat, nrs, ncs, mis, bcmis, zmat, h)
 
     ! R function to check real missing values
     integer :: rfinite
+    ! OpenMP functions for getting and setting number of cores
+    integer :: omp_get_num_procs
 
     naint = rnaint() ! Asks R for its missing integer coding
+
+    ! Select number of cores to use
+    maxcores = omp_get_num_procs()
+    if (ncores <= 0 .or. ncores > maxcores) then
+        ncores = maxcores
+    end if
+    call omp_set_num_threads(ncores)
 
     !$omp parallel do default(none) shared(ncc, ncs, cdat, sdat, &
     !$omp nrc, naint, h, mis, bcmis, zmat)  &
