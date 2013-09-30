@@ -25,7 +25,7 @@ dmi.pw <- function(disc1, disc2)
     return(result[c("mi", "bcmi", "zvalue")])
 }
 
-dmi <- function(dmat)
+dmi <- function(dmat, ncores = -1)
 {
     # Convert to integers
     dint <- matrix(0L, nrow = nrow(dmat), ncol = ncol(dmat))
@@ -45,6 +45,7 @@ dmi <- function(dmat)
                        mi = mi, 
                        bcmi = bcmi, 
                        zvalues = zans,
+                       as.integer(ncores),
                        NAOK = TRUE, 
                        DUP = FALSE)
 
