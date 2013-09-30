@@ -162,7 +162,7 @@ subroutine cmipw(v1, v2, lv, h1, h2, ans, mps, zvalue)
     zvalue = sqrt(dble(lv)) * mps / sdps
 end subroutine
 
-subroutine cmim(cdat, nrc, ncc, mis, bcmis, zmat, h)
+subroutine cmim(cdat, nrc, ncc, mis, bcmis, zmat, h, ncores)
     use iface
     implicit none
 
@@ -183,12 +183,21 @@ subroutine cmim(cdat, nrc, ncc, mis, bcmis, zmat, h)
     real(kind=rdble), dimension(nrc) :: cvec, svec
 
     ! Local variables
-    integer :: i, j, nok, k
+    integer :: i, j, nok, k, maxcores, ncores
     logical, dimension(nrc) :: ok
 
     ! R function to check real missing values
     integer :: rfinite
-
+   ! OpenMP functions for getting number of cores
+    integer :: omp_get_num_procs
+    
+    ! Select number of cores to use
+    maxcores = omp_get_num_procs()
+    if (ncores <= 0 .or. ncores > maxcores) then
+        ncores = maxcores
+    end if
+    call omp_set_num_threads(ncores)
+    
     !$omp parallel do default(none) shared(ncc, nrc, cdat, &
     !$omp h, mis, bcmis, zmat)  &
     !$omp private(ok, nok, cvec, svec, i, j) &
