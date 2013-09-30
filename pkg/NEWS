@@ -1,0 +1,8 @@
+NEWS for mpmi
+
+Changes in version 0.04:
+    *   Added 'ncores' parameter to implicitly parallel functions to select number
+        of processor cores used
+
+Changes in version 0.03: 
+    *   Initial release
