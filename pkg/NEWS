@@ -3,6 +3,7 @@ NEWS for mpmi
 Changes in version 0.04:
     *   Added 'ncores' parameter to implicitly parallel functions to select number
         of processor cores used
+    *   Changed all functions to use DUP = FALSE for safety     
 
 Changes in version 0.03: 
     *   Initial release
