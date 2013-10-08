@@ -2,14 +2,29 @@
 
 # Some tests for the mpmi package
 
-# N.B., all.equal() uses tolerance .Machine$double.eps ^ 0.5
-
 # Got the idea for assert() from Julia language comparison with R
 # https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.R
 #
 assert = function(bool) {
     if (!isTRUE(bool)) stop('Assertion failed')
 } 
+
+# N.B., all.equal() uses tolerance .Machine$double.eps ^ 0.5 by default, 
+# this may not be precise enough so it's overwritten below.
+# (On my machine this tolerance is 1.490116e-08.)
+#
+all.equal <- function(...) 
+{
+    base:::all.equal(..., tolerance = .Machine$double.eps)
+}
+# All the tests for equality of the procedures should pass with 
+# tolerance = .Machine$double.eps. The specific values are only
+# stored by dput() to an accuracy of 1e-14.
+#
+all.equal.weak <- function(...) 
+{
+    base:::all.equal(..., tolerance = 1e-14)
+}
 
 library(mpmi)
 data(mpmidata)
@@ -195,8 +210,8 @@ structure(c("H", "B", "H", "A", "B", "H", "A", "B", "A", "H",
 "A", "B", "H", "H", "H", "H", "B", "A", "B", "B", "B", "B"), .Dim = c(50L, 
 2L))
 
-assert(all.equal(cts[, 99:100], cts2))
-assert(all.equal(disc[, 74:75], disc2))
+assert(all.equal.weak(cts[, 99:100], cts2))
+assert(all.equal.weak(disc[, 74:75], disc2))
 
 # Calculated values:
 cvold <- structure(list(mi = structure(c(1.27911130190712, 1.17834767387782,
@@ -235,7 +250,7 @@ mvnew <- mmi(cts[,99:100], disc[,74:75])
 
 for (i in 1:3)
 {
-    assert(all.equal(cvold[[i]], cvnew[[i]]))
-    assert(all.equal(dvold[[i]], dvnew[[i]]))
-    assert(all.equal(mvold[[i]], mvnew[[i]]))
+    assert(all.equal.weak(cvold[[i]], cvnew[[i]]))
+    assert(all.equal.weak(dvold[[i]], dvnew[[i]]))
+    assert(all.equal.weak(mvold[[i]], mvnew[[i]]))
 }
