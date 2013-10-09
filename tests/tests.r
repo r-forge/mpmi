@@ -2,6 +2,9 @@
 
 # Some tests for the mpmi package
 
+library(parallel)
+options(mc.cores = 4L)
+
 # Got the idea for assert() from Julia language comparison with R
 # https://github.com/JuliaLang/julia/blob/master/test/perf/micro/perf.R
 #
@@ -47,9 +50,9 @@ for (i in c("c1", "d1", "m1"))
 # Dimensions
 for (i in 1:3)
 {
-    assert(all.equal(dim(c1[[1]]), c(100L, 100L)))
-    assert(all.equal(dim(d1[[1]]), c(75L, 75L)))
-    assert(all.equal(dim(m1[[1]]), c(100L, 75L)))
+    assert(all.equal(dim(c1[[i]]), c(100L, 100L)))
+    assert(all.equal(dim(d1[[i]]), c(75L, 75L)))
+    assert(all.equal(dim(m1[[i]]), c(100L, 75L)))
 }
 
 # Test that the pairwise functions equal the implicitly parallel ones
@@ -109,62 +112,69 @@ assert(d1n[74, 75] == d1pw2n)
 assert(m1n[100, 75] == m1pw1n)
 assert(m1n[99, 75] == m1pw2n)
 
-# Check explicit paralellisation from the vignette 
+##################################################
+# Check explicit paralellisation similar to the vignette 
 # - Not portable
-# - Makes some above tests redundant
-# - For BCMI only
-library(parallel)
+# - Makes most of the above tests redundant
 
 # Mixed comparisons
 hs <- apply(cts, 2, dpik, level = 3L, kernel = "epanech")
 fi <- function(i)
 {
-    bcmis <- rep(NaN, 100)
+    out <- vector(mode = "list")
     for (j in 1:100)
     {
-        bcmis[j] <- mmi.pw(cts[,j], disc[,i], h = hs[j])$bcmi
+        out[[j]] <- mmi.pw(cts[, j], disc[, i], h = hs[j])
     }
-    return(bcmis)
+    return(out)
 }
-parmmi <- mcmapply(fi, 1:75)
+parmmi <- mclapply(1:75, fi)
 
-assert(all.equal(dim(parmmi), c(100L, 75L)))
-assert(all.equal(m1$bcmi, parmmi))
+# More crazy code
+for (i in 1:3)
+{
+    assert(all.equal(as.vector(m1[[i]]), 
+                     unlist(lapply(parmmi, lapply, function(x) x[[i]]))))
+}
 
 # Continuous comparisons
 hs2 <- apply(cts, 2, dpik, level = 3L, kernel = "epanech")
 fi <- function(i)
 {
-    bcmis <- rep(NaN, 100)
+    out <- vector(mode = "list")
     for (j in i:100)
     {
-        bcmis[j] <- cmi.pw(cts[,i], cts[,j], h = hs2[c(i,j)])$bcmi
+        out[[j]] <- cmi.pw(cts[, i], cts[, j], h = hs2[c(i, j)])
     }
-    return(bcmis)
+    return(out)
 }
+parcmi <- mclapply(1:100, fi)
 
-parcmi <- mcmapply(fi, 1:100)
-
-assert(all.equal(dim(parcmi), c(100L, 100L)))
 lt <- function(x) x[lower.tri(x, diag = TRUE)]
-assert(all.equal(lt(c1$bcmi), lt(parcmi)))
+for (i in 1:3)
+{
+    assert(all.equal(as.vector(lt(c1[[i]])), 
+                     unlist(lapply(parcmi, lapply, function(x) x[[i]]))))
+}
 
 # Discrete comparisons
 fi <- function(i)
 {
-    bcmis <- rep(NaN, 75)
+    out <- vector(mode = "list")
     for (j in i:75)
     {
-        bcmis[j] <- dmi.pw(disc[,i], disc[,j])$bcmi
+        out[[j]] <- dmi.pw(disc[, i], disc[, j])
     }
-    return(bcmis)
+    return(out)
 }
+pardmi <- mclapply(1:75, fi)
 
-pardmi <- mcmapply(fi, 1:75)
-
-assert(all.equal(dim(pardmi), c(75, 75L)))
 lt <- function(x) x[lower.tri(x, diag = TRUE)]
-assert(all.equal(lt(d1$bcmi), lt(pardmi)))
+for (i in 1:3)
+{
+    assert(all.equal(as.vector(lt(d1[[i]])), 
+                     unlist(lapply(pardmi, lapply, function(x) x[[i]]))))
+}
 
 ##################################################
 # Check for some specific values
