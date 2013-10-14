@@ -212,13 +212,15 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h, ncores)
 
     naint = rnaint() ! Asks R for its missing integer coding
     
+#if defined(_OPENMP)
     ! Select number of cores to use
     maxcores = omp_get_num_procs()
     if (ncores <= 0 .or. ncores > maxcores) then
         ncores = maxcores
     end if
     call omp_set_num_threads(ncores)
-    
+#endif
+
     !$omp parallel do default(none) shared(ncc, ncs, cdat, sdat, &
     !$omp nrc, naint, h, mis)  &
     !$omp private(ok, nok, cvec, svec, i, j) &

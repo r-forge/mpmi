@@ -28,12 +28,14 @@ subroutine dmim(sdat, nrs, ncs, mis, bcmis, zmat, ncores)
     ! Assign R NA value
     naint = rnaint()
 
+#if defined(_OPENMP)
     ! Select number of cores to use
     maxcores = omp_get_num_procs()
     if (ncores <= 0 .or. ncores > maxcores) then
         ncores = maxcores
     end if
     call omp_set_num_threads(ncores)
+#endif
 
     !$omp parallel do default(none) shared(ncs, sdat, naint, mis, bcmis, zmat) &
     !$omp private(i, j, ok, nok, cvec, svec) &
@@ -262,12 +264,14 @@ subroutine dmimnjk(sdat, nrs, ncs, ansm, ncores)
     ! Assign R NA value
     naint = rnaint()
 
+#if defined(_OPENMP)
     ! Select number of cores to use
     maxcores = omp_get_num_procs()
     if (ncores <= 0 .or. ncores > maxcores) then
         ncores = maxcores
     end if
     call omp_set_num_threads(ncores)
+#endif
     
     !$omp parallel do default(none) shared(ncs, sdat, naint, ansm) &
     !$omp private(i, j, ok, nok, cvec, svec) &

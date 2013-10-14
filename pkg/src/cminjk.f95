@@ -191,12 +191,14 @@ subroutine cmimnjk(cdat, nrc, ncc, mis, h, ncores)
     ! OpenMP functions for getting number of cores
     integer :: omp_get_num_procs
 
+#if defined(_OPENMP)
     ! Select number of cores to use
     maxcores = omp_get_num_procs()
     if (ncores <= 0 .or. ncores > maxcores) then
         ncores = maxcores
     end if
     call omp_set_num_threads(ncores)
+#endif
 
     !$omp parallel do default(none) shared(ncc, nrc, cdat, &
     !$omp h, mis)  &
