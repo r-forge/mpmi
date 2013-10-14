@@ -16,15 +16,12 @@ assert = function(bool) {
 # this may not be precise enough so it's overwritten below.
 # (On my machine this tolerance is 1.490116e-08.)
 #
-all.equal <- function(...) 
-{
-    base:::all.equal(..., tolerance = .Machine$double.eps)
-}
 # All the tests for equality of the procedures should pass with 
-# tolerance = .Machine$double.eps. The specific values are only
+# tolerance = .Machine$double.eps (so use identical()). 
+# The specific numeric values are only
 # stored by dput() to an accuracy of 1e-14.
 #
-all.equal.weak <- function(...) 
+all.equal <- function(...) 
 {
     base:::all.equal(..., tolerance = 1e-14)
 }
@@ -37,22 +34,21 @@ d1 <- dmi(disc)
 m1 <- mmi(cts, disc)
 
 # Should be no missing values
-assert(all(unlist(lapply(c1, function(x) all(!is.na(x))))))
-assert(all(unlist(lapply(d1, function(x) all(!is.na(x))))))
-assert(all(unlist(lapply(m1, function(x) all(!is.na(x))))))
+assert(all(!is.na(unlist(c1))))
+assert(all(!is.na(unlist(d1))))
+assert(all(!is.na(unlist(m1))))
 
-# length of lists (bad code)
-for (i in c("c1", "d1", "m1"))
-{
-    assert(length(eval(parse(text = i))) == 3)
-}
+# length of lists
+assert(length(c1) == 3)
+assert(length(d1) == 3)
+assert(length(m1) == 3)
 
 # Dimensions
 for (i in 1:3)
 {
-    assert(all.equal(dim(c1[[i]]), c(100L, 100L)))
-    assert(all.equal(dim(d1[[i]]), c(75L, 75L)))
-    assert(all.equal(dim(m1[[i]]), c(100L, 75L)))
+    assert(identical(dim(c1[[i]]), c(100L, 100L)))
+    assert(identical(dim(d1[[i]]), c(75L, 75L)))
+    assert(identical(dim(m1[[i]]), c(100L, 75L)))
 }
 
 # Test that the pairwise functions equal the implicitly parallel ones
@@ -84,13 +80,13 @@ d1n <- dminjk(disc)
 m1n <- mminjk(cts, disc)
 
 # Should be no missing values
-assert(all(unlist(lapply(c1n, function(x) all(!is.na(x))))))
-assert(all(unlist(lapply(d1n, function(x) all(!is.na(x))))))
-assert(all(unlist(lapply(m1n, function(x) all(!is.na(x))))))
+assert(all(!is.na(unlist(c1n))))
+assert(all(!is.na(unlist(d1n))))
+assert(all(!is.na(unlist(m1n))))
 
-assert(all.equal(c1$mi, c1n))
-assert(all.equal(d1$mi, d1n))
-assert(all.equal(m1$mi, m1n))
+assert(identical(c1$mi, c1n))
+assert(identical(d1$mi, d1n))
+assert(identical(m1$mi, m1n))
 
 # Pairwise no-jackknife equal to implicitly parallel version
 # Diagonal
@@ -130,10 +126,10 @@ fi <- function(i)
 }
 parmmi <- mclapply(1:75, fi)
 
-# More crazy code
+# Crazy code
 for (i in 1:3)
 {
-    assert(all.equal(as.vector(m1[[i]]), 
+    assert(identical(as.vector(m1[[i]]), 
                      unlist(lapply(parmmi, lapply, function(x) x[[i]]))))
 }
 
@@ -153,7 +149,7 @@ parcmi <- mclapply(1:100, fi)
 lt <- function(x) x[lower.tri(x, diag = TRUE)]
 for (i in 1:3)
 {
-    assert(all.equal(as.vector(lt(c1[[i]])), 
+    assert(identical(as.vector(lt(c1[[i]])), 
                      unlist(lapply(parcmi, lapply, function(x) x[[i]]))))
 }
 
@@ -172,7 +168,7 @@ pardmi <- mclapply(1:75, fi)
 lt <- function(x) x[lower.tri(x, diag = TRUE)]
 for (i in 1:3)
 {
-    assert(all.equal(as.vector(lt(d1[[i]])), 
+    assert(identical(as.vector(lt(d1[[i]])), 
                      unlist(lapply(pardmi, lapply, function(x) x[[i]]))))
 }
 
@@ -220,8 +216,8 @@ structure(c("H", "B", "H", "A", "B", "H", "A", "B", "A", "H",
 "A", "B", "H", "H", "H", "H", "B", "A", "B", "B", "B", "B"), .Dim = c(50L, 
 2L))
 
-assert(all.equal.weak(cts[, 99:100], cts2))
-assert(all.equal.weak(disc[, 74:75], disc2))
+assert(all.equal(cts[, 99:100], cts2))
+assert(all.equal(disc[, 74:75], disc2))
 
 # Calculated values:
 cvold <- structure(list(mi = structure(c(1.27911130190712, 1.17834767387782,
@@ -258,9 +254,15 @@ cvnew <- cmi(cts[,99:100])
 dvnew <- dmi(disc[,74:75])
 mvnew <- mmi(cts[,99:100], disc[,74:75])
 
-for (i in 1:3)
-{
-    assert(all.equal.weak(cvold[[i]], cvnew[[i]]))
-    assert(all.equal.weak(dvold[[i]], dvnew[[i]]))
-    assert(all.equal.weak(mvold[[i]], mvnew[[i]]))
-}
+assert(all.equal(cvold, cvnew))
+assert(all.equal(dvold, dvnew))
+assert(all.equal(mvold, mvnew))
+
+##################################################
+##################################################
+##################################################
+
+# Test that changing number of cores gives the same answer
+assert(identical(mmi(cts, disc, ncores = 4), mmi(cts, disc, ncores = 2)))
+assert(identical(cmi(cts, ncores = 4), cmi(cts, ncores = 2)))
+assert(identical(dmi(disc, ncores = 4), dmi(disc, ncores = 2)))
