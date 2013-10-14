@@ -188,8 +188,11 @@ subroutine cmim(cdat, nrc, ncc, mis, bcmis, zmat, h, ncores)
 
     ! R function to check real missing values
     integer :: rfinite
+    
+#if defined(_OPENMP)    
    ! OpenMP functions for getting number of cores
     integer :: omp_get_num_procs
+#endif
 
 #if defined(_OPENMP)
     ! Select number of cores to use

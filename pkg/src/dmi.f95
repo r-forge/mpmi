@@ -22,8 +22,11 @@ subroutine dmim(sdat, nrs, ncs, mis, bcmis, zmat, ncores)
     integer :: rnaint
     ! Local variable to hold R NA value
     integer :: naint
-    ! OpenMP functions for getting number of cores
+    
+#if defined(_OPENMP)   
+    ! OpenMP function for getting number of cores
     integer :: omp_get_num_procs
+#endif
 
     ! Assign R NA value
     naint = rnaint()
@@ -258,8 +261,11 @@ subroutine dmimnjk(sdat, nrs, ncs, ansm, ncores)
     integer :: rnaint
     ! Local variable to hold R NA value
     integer :: naint
-    ! OpenMP functions for getting number of cores
+    
+#if defined(_OPENMP)    
+    ! OpenMP function for getting number of cores
     integer :: omp_get_num_procs
+#endif
 
     ! Assign R NA value
     naint = rnaint()

@@ -207,8 +207,11 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h, ncores)
 
     ! R function to check real missing values
     integer :: rfinite
+    
+#if defined(_OPENMP)    
     ! OpenMP functions for getting number of cores
     integer :: omp_get_num_procs
+#endif
 
     naint = rnaint() ! Asks R for its missing integer coding
     
