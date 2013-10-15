@@ -1,7 +1,7 @@
 Package: mpmi
 Type: Package
 Title: Mixed-pair mutual information estimators
-Version: 0.04
+Version: 0.4
 Date: 2012-01-11
 Author: Chris Pardy
 Maintainer: Chris Pardy <cpardy@unsw.edu.au>
