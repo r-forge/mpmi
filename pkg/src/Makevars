@@ -9,6 +9,7 @@ PKG_FCFLAGS=$(SHLIB_OPENMP_FCFLAGS)
 # the source code file the .F95 extension (with capital F).
 # This requires specifying a make target for *.F95.
 
+# Note that this does not work with ifort.
 
 SOURCES_F95 = $(wildcard F95/*.F95)
 SOURCES_C = $(wildcard *.c)
