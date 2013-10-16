@@ -1,7 +1,7 @@
 Package: mpmi
 Type: Package
 Title: Mixed-pair mutual information estimators
-Version: 0.03
+Version: 0.4
 Date: 2012-01-11
 Author: Chris Pardy
 Maintainer: Chris Pardy <cpardy@unsw.edu.au>
@@ -12,4 +12,5 @@ Description: Uses a kernel smoothing approach to calculate Mutual Information
     (BCMI). Implemented efficiently in Fortran 95 with OpenMP and suited to
     large genomic datasets.  
 License: GPL-3
+URL: http://r-forge.r-project.org/projects/mpmi/
 Depends: KernSmooth
