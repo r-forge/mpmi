@@ -25,7 +25,7 @@ dmi.pw <- function(disc1, disc2)
     return(result[c("mi", "bcmi", "zvalue")])
 }
 
-dmi <- function(dmat, ncores = -1)
+dmi <- function(dmat)
 {
     # Convert to integers
     dint <- matrix(0L, nrow = nrow(dmat), ncol = ncol(dmat))
@@ -45,9 +45,8 @@ dmi <- function(dmat, ncores = -1)
                        mi = mi, 
                        bcmi = bcmi, 
                        zvalues = zans,
-                       as.integer(ncores),
                        NAOK = TRUE, 
-                       DUP = TRUE)
+                       DUP = FALSE)
 
     return(result[c("mi", "bcmi", "zvalues")])
 }
@@ -62,10 +61,10 @@ dminjk.pw <- function(disc1, disc2)
                     as.integer(length(disc1)),
                     disc2,
                     as.integer(length(disc2)),
-                    result = ans, DUP = TRUE)$result)
+                    result = ans, DUP = FALSE)$result)
 }
 
-dminjk <- function(dmat, ncores = -1)
+dminjk <- function(dmat)
 {
     # Convert to integers
     dint <- matrix(0L, nrow = nrow(dmat), ncol = ncol(dmat))
@@ -79,8 +78,6 @@ dminjk <- function(dmat, ncores = -1)
                     dint,
                     as.integer(nrow(dint)),
                     as.integer(ncol(dint)),
-                    result = ans, 
-                    as.integer(ncores),
-                    NAOK = TRUE, DUP = TRUE)$result)
+                    result = ans, NAOK = TRUE, DUP = FALSE)$result)
 }
 

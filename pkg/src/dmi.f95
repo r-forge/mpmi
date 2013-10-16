@@ -1,4 +1,4 @@
-subroutine dmim(sdat, nrs, ncs, mis, bcmis, zmat, ncores)
+subroutine dmim(sdat, nrs, ncs, mis, bcmis, zmat)
     use iface
     implicit none
 
@@ -13,7 +13,7 @@ subroutine dmim(sdat, nrs, ncs, mis, bcmis, zmat, ncores)
     real(kind=rdble), dimension(ncs, ncs), intent(out) :: zmat
 
     ! Local variables
-    integer :: i, j, nok, maxcores, ncores
+    integer :: i, j, nok
     logical, dimension(nrs) :: ok
     ! Arrays to hold non-missing observations only
     integer, dimension(nrs) :: cvec, svec
@@ -22,23 +22,9 @@ subroutine dmim(sdat, nrs, ncs, mis, bcmis, zmat, ncores)
     integer :: rnaint
     ! Local variable to hold R NA value
     integer :: naint
-    
-#if defined(_OPENMP)   
-    ! OpenMP function for getting number of cores
-    integer :: omp_get_num_procs
-#endif
 
     ! Assign R NA value
     naint = rnaint()
-
-#if defined(_OPENMP)
-    ! Select number of cores to use
-    maxcores = omp_get_num_procs()
-    if (ncores <= 0 .or. ncores > maxcores) then
-        ncores = maxcores
-    end if
-    call omp_set_num_threads(ncores)
-#endif
 
     !$omp parallel do default(none) shared(ncs, sdat, naint, mis, bcmis, zmat) &
     !$omp private(i, j, ok, nok, cvec, svec) &
@@ -240,7 +226,7 @@ subroutine dminjk(v1, l1, v2, l2, ans)
     deallocate(tab, ptab, rv, cv)
 end subroutine
 
-subroutine dmimnjk(sdat, nrs, ncs, ansm, ncores)
+subroutine dmimnjk(sdat, nrs, ncs, ansm)
     use iface
     implicit none
 
@@ -252,7 +238,7 @@ subroutine dmimnjk(sdat, nrs, ncs, ansm, ncores)
     real(kind=rdble), dimension(ncs, ncs), intent(out) :: ansm
 
     ! Local variables
-    integer :: i, j, nok, maxcores, ncores
+    integer :: i, j, nok
     logical, dimension(nrs) :: ok
     ! Arrays to hold non-missing observations only
     integer, dimension(nrs) :: cvec, svec
@@ -261,24 +247,10 @@ subroutine dmimnjk(sdat, nrs, ncs, ansm, ncores)
     integer :: rnaint
     ! Local variable to hold R NA value
     integer :: naint
-    
-#if defined(_OPENMP)    
-    ! OpenMP function for getting number of cores
-    integer :: omp_get_num_procs
-#endif
 
     ! Assign R NA value
     naint = rnaint()
 
-#if defined(_OPENMP)
-    ! Select number of cores to use
-    maxcores = omp_get_num_procs()
-    if (ncores <= 0 .or. ncores > maxcores) then
-        ncores = maxcores
-    end if
-    call omp_set_num_threads(ncores)
-#endif
-    
     !$omp parallel do default(none) shared(ncs, sdat, naint, ansm) &
     !$omp private(i, j, ok, nok, cvec, svec) &
     !$omp schedule(dynamic)

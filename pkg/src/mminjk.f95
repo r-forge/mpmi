@@ -22,7 +22,10 @@ subroutine mmipwnjk(cts, lc, disc, h, ans) !, mps, zvalue)
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
     ! Output variables:
     ! ans = raw MI value
-    real(kind=rdble), intent(out) :: ans 
+    ! mps = bias corrected mi value
+    ! zvalue = approximate z value for hypothesis that 
+    ! mps == 0
+    real(kind=rdble), intent(out) :: ans !, mps, zvalue
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
    
     !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
@@ -40,6 +43,19 @@ subroutine mmipwnjk(cts, lc, disc, h, ans) !, mps, zvalue)
 
     ! Kernel distance matrix
     real(kind=rdble), dimension(lc, lc) :: kmat
+
+    ! Jackknifed MI scores
+    ! real(kind=rdble), dimension(lc) :: ansjk
+
+    ! Jackknife pseudo values
+    ! real(kind=rdble), dimension(lc) :: ps
+
+    ! Standard deviation of pseudo values
+    ! real(kind=rdble) :: sdps
+
+    ! Sums of kernel distances within jackknife
+    ! (I.e., with kth observation removed)
+    ! real(kind=rdble) :: t22, t32
 
     ! Dynamic arrays:
     ! Table of discrete variable
@@ -117,11 +133,48 @@ subroutine mmipwnjk(cts, lc, disc, h, ans) !, mps, zvalue)
         ans = ans + ptab(disc(i)) * log(lc * t3(i) / (tab(disc(i)) * t2(i))) / tab(disc(i))
     end do
 
+    ! ansjk = 0.0
+    ! do k = 1, lc
+    !     ! Remove kth observation from table of counts
+    !     ! (Because tab(disc(i)) may equal tab(disc(k)) below)
+    !     tab(disc(k)) = tab(disc(k)) - 1
+
+    !     do i = 1, lc
+    !         ! Exclude kth observation
+    !         if (i .ne. k) then
+    !             ! Subtracting kernel distances to kth observation (as per
+    !             ! jackknife)
+    !             t22 = t2(i) - kmat(k, i)
+
+    !             if (disc(i) == disc(k)) then
+    !                 t32 = t3(i) - kmat(k, i)
+    !             else
+    !                 t32 = t3(i)
+    !             end if
+    !    
+    !             ! Accumulate kth jackknife MI value
+    !             ansjk(k) = ansjk(k) + ((tab(disc(i)))/(lc-1.0)) * log((lc-1.0) * t32 / ((tab(disc(i))) * t22)) / (tab(disc(i)))
+    !         end if
+    !     end do
+
+    !     ! Put kth observation back in table of counts
+    !     tab(disc(k)) = tab(disc(k)) + 1
+    ! end do
+
+    ! Get bias corrected MI value and z-value from the jackknife
+    ! using Tukey's pseudo-value approach.
+    ! (There are probably more efficient ways to do this.)
+    ! ps = dble(lc) * ans - (dble(lc) - 1.0) * ansjk
+
+    ! mps = sum(ps) / dble(lc)
+    ! sdps = sqrt(sum((ps - mps) * (ps - mps)) / (dble(lc) - 1.0))
+    ! zvalue = sqrt(dble(lc)) * mps / sdps
+
     deallocate(tab)
     deallocate(ptab)
 end subroutine
 
-subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h, ncores)
+subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h)
     use iface
     implicit none
 
@@ -134,6 +187,9 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h, ncores)
 
     ! Output matrix (now holds bias corrected estimates)
     real(kind=rdble), dimension(ncc, ncs), intent(out) :: mis
+    ! real(kind=rdble), dimension(ncc, ncs), intent(out) :: bcmis
+    ! Matrix of z-values
+    ! real(kind=rdble), dimension(ncc, ncs), intent(out) :: zmat
 
     ! Arrays to hold non-missing observations only
     ! Reuse 'static' arrays for speed
@@ -141,7 +197,7 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h, ncores)
     integer, dimension(nrs) :: svec
 
     ! Local variables
-    integer :: i, j, k, nok, maxcores, ncores
+    integer :: i, j, k, nok
     logical, dimension(nrc) :: ok
 
     ! Function to get R's code for missing integers
@@ -151,22 +207,8 @@ subroutine mmimnjk(cdat, nrc, ncc, sdat, nrs, ncs, mis, h, ncores)
 
     ! R function to check real missing values
     integer :: rfinite
-    
-#if defined(_OPENMP)    
-    ! OpenMP functions for getting number of cores
-    integer :: omp_get_num_procs
-#endif
 
     naint = rnaint() ! Asks R for its missing integer coding
-    
-#if defined(_OPENMP)
-    ! Select number of cores to use
-    maxcores = omp_get_num_procs()
-    if (ncores <= 0 .or. ncores > maxcores) then
-        ncores = maxcores
-    end if
-    call omp_set_num_threads(ncores)
-#endif
 
     !$omp parallel do default(none) shared(ncc, ncs, cdat, sdat, &
     !$omp nrc, naint, h, mis)  &
