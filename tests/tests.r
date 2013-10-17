@@ -262,7 +262,4 @@ assert(all.equal(mvold, mvnew))
 ##################################################
 ##################################################
 
-# Test that changing number of cores gives the same answer
-# assert(identical(mmi(cts, disc, ncores = 4), mmi(cts, disc, ncores = 2)))
-# assert(identical(cmi(cts, ncores = 4), cmi(cts, ncores = 2)))
-# assert(identical(dmi(disc, ncores = 4), dmi(disc, ncores = 2)))
+cat("\nAll tests passed.\n\n")
