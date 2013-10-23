@@ -19,11 +19,11 @@ assert = function(bool) {
 # All the tests for equality of the procedures should pass with 
 # tolerance = .Machine$double.eps (so use identical()). 
 # The specific numeric values are only
-# stored by dput() to an accuracy of 1e-14.
+# stored by dput() to an accuracy of 1e-13.
 #
 all.equal <- function(...) 
 {
-    base:::all.equal(..., tolerance = 1e-14)
+    base:::all.equal(..., tolerance = 1e-13)
 }
 
 library(mpmi)
